@@ -1,12 +1,8 @@
-// Goat-Bot V2 - 【entity-Messenger¦canonical_name=Messenger】 Version
-const login = require("fca-unofficial");
+// Goat-Bot V2 - Messenger Version - NEW 2026 Fix
+const login = require("ws3-fca");
 const fs = require("fs");
 
-const jokes = [
-"Teacher: Late kyu aaye? Student: Board pe likha tha School Ahead Go Slow 😂",
-"Lahore Lahore Ae! 😍",
-"Goat-Bot V2 ON hai, masti rukegi nahi! 🔥"
-];
+const jokes = ["Teacher: Late kyu aaye? Student: Board pe likha tha School Ahead Go Slow 😂","Lahore Lahore Ae! 😍","Goat-Bot V2 ON hai, masti rukegi nahi! 🔥"];
 const songs = ["1. Pasoori - 【entity-Ali Sethi¦canonical_name=Ali Sethi】","2. Kahani Suno - 【entity-Kaifi Khalil¦canonical_name=Kaifi Khalil】","3. Brown Munde - 【entity-AP Dhillon¦canonical_name=AP Dhillon】","4. High Rated Gabru","5. Raabta"];
 
 function reply(cmd, args){
@@ -23,10 +19,11 @@ function reply(cmd, args){
 
 const appState = JSON.parse(fs.readFileSync("appstate.json", "utf8"));
 login({appState}, (err, api)=>{
-  if(err) return console.log("Login Fail! Appstate galat hai", err);
-  console.log("✅ Goat-Bot 【entity-Messenger¦canonical_name=Messenger】 se CONNECT ho gaya!");
+  if(err) return console.log("Login Fail!", err);
+  console.log("✅ Goat-Bot Messenger se CONNECT ho gaya!");
+  api.setOptions({ listenEvents: true, selfListen: false });
   api.listenMqtt((err, event)=>{
-    if(err) return;
+    if(err) return console.log("Listen Error, retry...", err);
     if(event.type==="message" && event.body && event.body.startsWith("!")){
       const a = event.body.slice(1).trim().split(/ +/);
       const c = a.shift().toLowerCase();
