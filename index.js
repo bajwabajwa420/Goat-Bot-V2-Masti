@@ -22,7 +22,7 @@ login({appState}, (err, api)=>{
   if(err) return console.log("Login Fail!", err);
   console.log("✅ Goat-Bot Messenger se CONNECT ho gaya!");
   api.setOptions({ listenEvents: true, selfListen: false });
-  api.listenMqtt((err, event)=>{
+  api.listen((err, event)=>{
     if(err) return console.log("Listen Error, retry...", err);
     if(event.type==="message" && event.body && event.body.startsWith("!")){
       const a = event.body.slice(1).trim().split(/ +/);
