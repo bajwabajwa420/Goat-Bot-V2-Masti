@@ -1,6 +1,6 @@
 // BAJWA BOT - ALL 40 COMMANDS + Admin + Welcome + Har Message Reply
 // Kuch delete nahi kiya - Purane 40 + Naye sab ek saath
-const login = require("ws3-fca");
+const { login } = require("ws3-fca");
 const fs = require("fs");
 
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
