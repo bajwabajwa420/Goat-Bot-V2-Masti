@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": { "start": "node index.js" },
   "dependencies": {
-    "fca-unofficial": "^1.0.0",
+    "ws3-fca": "latest",
     "fs-extra": "^11.1.1"
   }
 }
