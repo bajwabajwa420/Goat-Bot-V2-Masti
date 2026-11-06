@@ -29,7 +29,14 @@ const sadRemoveMessages = ["😢 Haye Allah! {name} ko remove kar diya? Dil toot
 const funnyLeftMessages = ["😂 Oye {name} khud hi bhaag gaya! Lagta hai !roast se dar gaya 🤣", "Oye {name} bhaag gaya! Biryani khatam hone se pehle bhaag gaya 😂🍗", "😂 {name} ne left kar diya? Lagta hai mummy ne bula liya - 'Beta sabzi le aa' 🤣"];
 
 const songs = ["1. Pasoori - 【entity-Ali Sethi¦canonical_name=Ali Sethi】", "2. Kahani Suno - 【entity-Kaifi Khalil¦canonical_name=Kaifi Khalil】", "3. Brown Munde - 【entity-AP Dhillon¦canonical_name=AP Dhillon】", "4. High Rated Gabru - 【entity-Guru Randhawa¦canonical_name=Guru Randhawa】", "5. Lahore - 【entity-Guru Randhawa¦canonical_name=Guru Randhawa】", "6. Raabta - 【entity-Arijit Singh¦canonical_name=Arijit Singh】"];
-
+  if(cmd=="couple") return "💑 AAJ KA COUPLE:\n" + senderName + " ❤️ " + pick(["Ayesha", "Ali", "Mahnoor", "Hamza", "Fatima", "Usman"]) + "\nShadi Mubarak! 😂❤️";
+  if(cmd=="shadi") return "💍 SHADI MUBARAK!\nAaj " + senderName + " ki shadi hai! 🥳\nBarat leke aao, nacho gao! 💃🕺";
+  if(cmd=="quiz") return "🧠 QUIZ TIME!\nPakistan ka National Dish kya hai?\nA) Biryani B) Nihari C) Karahi\nJawab do!";
+  if(cmd=="challenge") return "😈 CHALLENGE:\n" + pick(["Apni gallery ki 3rd photo group me bhejo 😈", "Apne crush ko Hi likh ke screenshot bhejo 😏", "Agle 5 min tak sirf emoji me baat karo 😂"]);
+  if(cmd=="top") return "🏆 AAJ KA TOP:\n1. Sab se zyada bolne wala: " + senderName + " 😂\n2. Sab se cute: " + senderName + " 😍";
+  if(cmd=="baji") return "🍵 OYE BAJI!\nBaji chai bana do, mehmaan aaye hain! 😂";
+  if(cmd=="bottle") return "🍾 BOTTLE GAME!\nBottle ghumi aur ruki " + senderName + " pe!\nAb " + senderName + " ko !truth ya !dare karna parega 😈";
+  if(cmd=="ronak") return "🔥 RONAK LAG GAYI!\nSab hazir ho jao! 💃🕺\n!couple !shadi !quiz !challenge !bottle likh ke dekho!";
 function reply(cmd, args, senderName){
   // ===== MASTI - 12 =====
   if(cmd=="hi") return "Hello Jaan! 😍 Kaisi ho?";
