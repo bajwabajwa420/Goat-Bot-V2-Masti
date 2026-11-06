@@ -1,18 +1,22 @@
-// BAJWA BOT - FINAL JS CODE - Sab kuch ek me
+// BAJWA BOT - FINAL EK HI FILE - Purani sab delete, sirf ye rakh lo
 const { login } = require("ws3-fca");
 const fs = require("fs");
+const { exec } = require("child_process");
+
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function getName(api, id){ return new Promise((res)=>{ api.getUserInfo(id, (err, ret)=>{ if(err || !ret || !ret[id]) return res("Dost"); res(ret[id].name || "Dost"); }); }); }
 function isAdmin(api, threadID, senderID){ return new Promise((res)=>{ api.getThreadInfo(threadID, (err, info)=>{ if(err) return res(false); if(senderID == api.getCurrentUserID()) return res(true); res((info.adminIDs || []).some(a => a.id == senderID)); }); }); }
+
 const autoReplies = ["Haye! Tumne mujhe bulaya? Maza aa gaya 😍", "Oye hoye! Kya baat hai, bolo bolo 😎", "Haan haan bolo, main sun raha hun, Bajwa Bot hazir hai 🔥"];
 const funnyReplies = ["Oye hoye! Mujhe reply kiya? Fan following barh rahi hai 😎", "Reply kar diya? Ab to shadi pakki samjho 😂"];
 const welcomeMessages = ["🎉 Welcome {name}! Group me aa gaya! Ab masti double 🔥 !help likh ke dekho!", "Oye hoye! Naya mehmaan {name} Welcome meri jaan 😍💃"];
 const sadRemoveMessages = ["😢 Haye Allah! {name} ko remove kar diya? Dil toot gaya 💔"];
 const funnyLeftMessages = ["😂 Oye {name} khud hi bhaag gaya! !roast se dar gaya 🤣"];
 const messageCache = new Map();
+
 function reply(cmd, args, senderName){
   if(cmd=="hi") return "Hello Jaan! 😍 Kaisi ho?";
-  if(cmd=="help") return "🦁 BAJWA BOT 👑\nMasti: !hi !joke !shayari !song !play !masti !truth !dare !slap !lyrics !8ball !roast\nPyar: !love !hug !kiss !goodmorning !goodnight !sad !happy !birthday !crush !bff !cute\nGame: !coin !dice\nGroup: !admin !rules !intro !emoji !code !fact !info !queen !king !chappal !dost\nRonak: !couple !shadi !quiz !challenge !top !baji !bottle !ronak\nPair: !pairdp\nVIP: !del (Reply karke) | Unsend Wapis\nSong: !song [naam] | !play [naam] | !song audio [naam] | !song video [naam]\nAdmin: !tagall !kick";
+  if(cmd=="help") return "🦁 BAJWA BOT 👑\nMasti: !hi !joke !shayari !song !play !masti !truth !dare !slap !lyrics !8ball !roast\nPyar: !love !hug !kiss !goodmorning !goodnight !sad !happy !birthday !crush !bff !cute\nGame: !coin !dice\nGroup: !admin !rules !intro !emoji !code !fact !info !queen !king !chappal !dost\nRonak: !couple !shadi !quiz !challenge !top !baji !bottle !ronak\nPair: !pairdp\nVIP: !del (Reply karke) | Unsend Wapis\nSong: !song [naam] = Audio | !song video [naam] = Video | !play [naam]\nAdmin: !tagall !kick";
   if(cmd=="joke") return "😂 JOKE: Teacher: Late kyu aaye? Student: Status dekha tha 'School Closed' 😂";
   if(cmd=="shayari") return "❤️ SHAYARI: Teri yaad me chai pee li, ab neend nahi aati ☕😂";
   if(cmd=="masti") return "🎉 FULL MASTI: Oye chup kar ke nacho! 💃 Bajwa Bot zindabad! 🔥";
@@ -39,7 +43,7 @@ function reply(cmd, args, senderName){
   if(cmd=="rules") return "📜 RULES: 1. Galiyan nahi 😡 2. Izzat karo ❤️ 3. Roz !joke suno 😂";
   if(cmd=="intro") return "👋 INTRO: Mera naam Bajwa Bot hai! 🦁 !help likh ke dekho!";
   if(cmd=="emoji") return "😂😍🔥💃🥳😎❤️👑🦁🎉";
-  if(cmd=="code") return "💻 CODE: Bot ka code GitHub pe hai 😎";
+  if(cmd=="code") return "💻 CODE: Bot ka code 【entity-GitHub¦canonical_name=GitHub】 pe hai 😎";
   if(cmd=="fact") return "🤯 FACT: Hansne se dil strong hota hai! 😂";
   if(cmd=="info") return "🦁 Bajwa Bot V2 👑 Owner: Baiwa";
   if(cmd=="queen") return "👸 QUEEN: Is group ki Queen to tum hi ho! 👑❤️";
@@ -56,6 +60,7 @@ function reply(cmd, args, senderName){
   if(cmd=="ronak") return "🔥 RONAK LAG GAYI! Sab hazir ho jao! 💃 !couple !shadi !quiz !challenge !bottle !pairdp likh ke dekho!";
   return "Pata nahi! !help likho";
 }
+
 const appState = JSON.parse(fs.readFileSync("appstate.json", "utf8"));
 login({appState}, (err, api)=>{
   if(err) return console.error(err);
@@ -90,6 +95,7 @@ login({appState}, (err, api)=>{
     const body = event.body.trim();
     const senderName = await getName(api, event.senderID);
     if(event.messageID){ messageCache.set(event.messageID, body); if(messageCache.size > 100){ const k = messageCache.keys().next().value; messageCache.delete(k); } }
+
     if(body.toLowerCase().startsWith("!tagall")){
       const admin = await isAdmin(api, event.threadID, event.senderID);
       if(!admin) return api.sendMessage("😡 Ye sirf Admin use kar sakta hai!", event.threadID, event.messageID);
@@ -123,20 +129,30 @@ login({appState}, (err, api)=>{
       else api.sendMessage("Kisi message ko Reply karke !del likho!", event.threadID, event.messageID);
       return;
     }
+
+    // ===== SONG - ASLI AUDIO / VIDEO - LINK NAHI =====
     if(body.toLowerCase().startsWith("!song") || body.toLowerCase().startsWith("!play") || body.toLowerCase().startsWith("!audio") || body.toLowerCase().startsWith("!video")){
-      let songName=""; let isAudio=false; let isVideo=false;
-      if(body.toLowerCase().startsWith("!song audio")){ songName=body.slice(11).trim(); isAudio=true; }
-      else if(body.toLowerCase().startsWith("!song video")){ songName=body.slice(11).trim(); isVideo=true; }
-      else if(body.toLowerCase().startsWith("!song")){ songName=body.slice(5).trim(); }
-      else if(body.toLowerCase().startsWith("!play")){ songName=body.slice(5).trim(); }
-      else if(body.toLowerCase().startsWith("!audio")){ songName=body.slice(6).trim(); isAudio=true; }
-      else if(body.toLowerCase().startsWith("!video")){ songName=body.slice(6).trim(); isVideo=true; }
-      if(!songName) return api.sendMessage("🎵 Likho: !song pasoori", event.threadID, event.messageID);
-      const ytLink = "https://www.youtube.com/results?search_query=" + encodeURIComponent(songName + " song");
-      if(isAudio) return api.sendMessage("🎵 AUDIO: " + songName + "\n\nSuno: " + ytLink, event.threadID, event.messageID);
-      if(isVideo) return api.sendMessage("🎥 VIDEO: " + songName + "\n\nDekho: " + ytLink, event.threadID, event.messageID);
-      return api.sendMessage("🎵 AB CHALEGA: " + songName + "\n\nSuno: " + ytLink, event.threadID, event.messageID);
+      let songName=""; let isVideo=false;
+      if(body.toLowerCase().startsWith("!song video") || body.toLowerCase().startsWith("!video")){ songName = body.replace(/!song video|!video/gi,"").trim(); isVideo=true; }
+      else if(body.toLowerCase().startsWith("!song audio") || body.toLowerCase().startsWith("!audio")){ songName = body.replace(/!song audio|!audio/gi,"").trim(); }
+      else if(body.toLowerCase().startsWith("!song")){ songName = body.slice(5).trim(); }
+      else if(body.toLowerCase().startsWith("!play")){ songName = body.slice(5).trim(); }
+      if(!songName) return api.sendMessage("🎵 Likho: !song rimjhim rimjhim", event.threadID, event.messageID);
+      api.sendMessage("🎵 " + songName + " download ho raha hai... 10 sec ruko 🎧", event.threadID, event.messageID);
+      const fileName = isVideo ? "song_video.mp4" : "song_audio.mp3";
+      try{ fs.unlinkSync(fileName); }catch(e){}
+      const cmd = isVideo
+        ? `yt-dlp -f "mp4" -o "${fileName}" "ytsearch1:${songName} song"`
+        : `yt-dlp -x --audio-format mp3 -o "${fileName}" "ytsearch1:${songName} song"`;
+      exec(cmd, (err)=>{
+        if(err || !fs.existsSync(fileName)){
+          return api.sendMessage("😢 Audio download nahi hua, dobara try karo: !song " + songName, event.threadID, event.messageID);
+        }
+        api.sendMessage({body: isVideo ? "🎥 VIDEO AA GAYI: " + songName + " 🎬" : "🎵 AUDIO AA GAYA: " + songName + " 🎧\nVolume full karo! 💃", attachment: fs.createReadStream(fileName)}, event.threadID, event.messageID);
+      });
+      return;
     }
+
     if(event.messageReply && event.messageReply.senderID == api.getCurrentUserID()) return api.sendMessage(pick(funnyReplies), event.threadID, event.messageID);
     if(body.startsWith("!")){ const parts = body.slice(1).split(" "); const cmd = parts[0].toLowerCase(); const args = parts.slice(1); return api.sendMessage(reply(cmd, args, senderName), event.threadID, event.messageID); }
     if(body.toLowerCase().includes("bot") || (event.mentions && Object.keys(event.mentions).includes(String(api.getCurrentUserID())))) return api.sendMessage(pick(autoReplies), event.threadID, event.messageID);
