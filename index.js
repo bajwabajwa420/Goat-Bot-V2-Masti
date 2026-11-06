@@ -1,4 +1,4 @@
-// BAJWA BOT - FINAL FULL FILE - Full Song wali - python -m fix ke saath
+// BAJWA BOT - FINAL FULL FILE - Double Song System - Kabhi Fail Nahi Hoga
 const { login } = require("ws3-fca");
 const fs = require("fs");
 const { exec } = require("child_process");
@@ -124,7 +124,7 @@ login({appState}, (err, api)=>{
       else api.sendMessage("Kisi message ko Reply karke !del likho!", event.threadID, event.messageID);
       return;
     }
-    // ===== FULL SONG - python -m wali fix =====
+    // ===== FULL SONG - Double System - YouTube fail to Saavn se =====
     if(body.toLowerCase().startsWith("!song") || body.toLowerCase().startsWith("!play") || body.toLowerCase().startsWith("!audio")){
       let songName="";
       if(body.toLowerCase().startsWith("!song audio")) songName = body.slice(11).trim();
@@ -132,15 +132,31 @@ login({appState}, (err, api)=>{
       else if(body.toLowerCase().startsWith("!play")) songName = body.slice(5).trim();
       else if(body.toLowerCase().startsWith("!audio")) songName = body.slice(6).trim();
       if(!songName) return api.sendMessage("🎵 Likho: !song rimjhim rimjhim", event.threadID, event.messageID);
-      api.sendMessage("🎵 FULL SONG " + songName + " download ho raha hai... 20-30 sec ruko, full aayega! 🎧", event.threadID, event.messageID);
+      api.sendMessage("🎵 FULL SONG " + songName + " download ho raha hai... 30 sec ruko, poora aayega! 🎧", event.threadID, event.messageID);
       const fileName = "song_full.mp3";
       try{ fs.unlinkSync(fileName); }catch(e){}
-      const cmd = `python -m yt_dlp -x --audio-format mp3 -o "${fileName}" "ytsearch1:${songName} song"`;
-      exec(cmd, (err)=>{
-        if(err || !fs.existsSync(fileName)){
-          return api.sendMessage("😢 Full song download nahi hua, dobara try karo!", event.threadID, event.messageID);
+      // Pehle YouTube se try karo - SIMPLE, koi filter nahi!
+      const cmd = `python -m yt_dlp -x --audio-format mp3 --audio-quality 5 -o "${fileName}" "ytsearch1:${songName} song"`;
+      exec(cmd, async (err)=>{
+        if(!err && fs.existsSync(fileName)){
+          return api.sendMessage({body: "🎵 FULL SONG AA GAYA: " + songName + " 🎧\nPoora song hai, maza karo! 💃🔥", attachment: fs.createReadStream(fileName)}, event.threadID, event.messageID);
         }
-        api.sendMessage({body: "🎵 FULL SONG AA GAYA: " + songName + " 🎧\nPoora song hai, maza karo! 💃🔥", attachment: fs.createReadStream(fileName)}, event.threadID, event.messageID);
+        // Agar YouTube fail ho gaya, to Saavn se try karo!
+        api.sendMessage("🔄 YouTube slow hai, Saavn se try kar rahi hun... 10 sec ruko!", event.threadID);
+        try{
+          const res = await fetch("https://saavn.dev/api/search/songs?query=" + encodeURIComponent(songName));
+          const data = await res.json();
+          if(!data.data || !data.data.results || !data.data.results[0]) throw new Error("no result");
+          const song = data.data.results[0];
+          const url = song.downloadUrl ? song.downloadUrl[song.downloadUrl.length-1].url : null;
+          if(!url) throw new Error("no url");
+          const r2 = await fetch(url);
+          const buf = Buffer.from(await r2.arrayBuffer());
+          fs.writeFileSync(fileName, buf);
+          return api.sendMessage({body: "🎵 FULL SONG AA GAYA: " + song.name + " - " + song.artists.primary.map(a=>a.name).join(", ") + " 🎧\nPoora song hai! 💃🔥", attachment: fs.createReadStream(fileName)}, event.threadID, event.messageID);
+        }catch(e2){
+          return api.sendMessage("😢 Dono se nahi hua, net slow hai, 1 min baad dobara try karo! !song " + songName, event.threadID, event.messageID);
+        }
       });
       return;
     }
