@@ -1,4 +1,4 @@
-// BAJWA BOT - FINAL FIXED - Sab sahi jagah pe hai
+// BAJWA BOT - FINAL FIXED - Bot sirf bulane pe bolega
 const { login } = require("ws3-fca");
 const fs = require("fs");
 
@@ -21,7 +21,7 @@ function isAdmin(api, threadID, senderID){
   });
 }
 
-const autoReplies = ["Haye! Tumne message kiya? Maza aa gaya 😍", "Oye hoye! Kya baat hai, aaj to full active ho 😎", "Hmm... Tumhari baat sun ke mujhe !joke yaad aa gaya 😂", "Acha acha, samajh gaya! Ab !masti likh ke dekho 😜", "Wah wah! Kya line mari hai 😂👏", "Haan haan bolo, main sun raha hun, Bajwa Bot hazir hai 🔥", "Samajh gaya meri jaan! Ab !song likh ke party karo 💃"];
+const autoReplies = ["Haye! Tumne mujhe bulaya? Maza aa gaya 😍", "Oye hoye! Kya baat hai, bolo bolo 😎", "Haan haan bolo, main sun raha hun, Bajwa Bot hazir hai 🔥", "Samajh gaya meri jaan! Ab !song likh ke party karo 💃", "Wah wah! Mujhe yaad kiya? Dil khush ho gaya 🥺❤️"];
 const funnyReplies = ["Oye hoye! Mujhe reply kiya? Fan following barh rahi hai 😎", "Reply kar diya? Ab to shadi pakki samjho 😂", "Itna reply karega to Facebook wale sochenge hum dono ka chakkar hai 👀"];
 const welcomeMessages = ["🎉 Welcome Welcome! {name} group me aa gaya! Ab masti double ho jayegi 🔥\n!help likh ke dekho!", "Oye hoye! Naya mehmaan aa gaya! {name} Welcome meri jaan 😍💃", "Welcome {name}! 🥳 Group ka naya star aa gaya!"];
 const sadRemoveMessages = ["😢 Haye Allah! {name} ko remove kar diya? Dil toot gaya mera 💔"];
@@ -59,7 +59,7 @@ function reply(cmd, args, senderName){
   if(cmd=="rules") return "📜 GROUP RULES:\n1. Galiyan nahi deni 😡\n2. Sab ki izzat karni hai ❤️\n3. Roz !joke sunna hai 😂";
   if(cmd=="intro") return "👋 INTRO:\nMera naam Bajwa Bot hai! 🦁 !help likh ke dekho!";
   if(cmd=="emoji") return "😂😍🔥💃🥳😎❤️👑🦁🎉";
-  if(cmd=="code") return "💻 CODE:\nBot ka code 【entity-GitHub¦canonical_name=GitHub】 pe hai 😎";
+  if(cmd=="code") return "💻 CODE:\nBot ka code GitHub pe hai 😎";
   if(cmd=="fact") return "🤯 FACT:\nHansne se dil strong hota hai! 😂";
   if(cmd=="info") return "🦁 Bajwa Bot V2\n👑 Owner: Baiwa";
   if(cmd=="queen") return "👸 QUEEN:\nIs group ki Queen to tum hi ho! 👑❤️";
@@ -107,6 +107,7 @@ login({appState}, (err, api)=>{
     if(event.senderID == api.getCurrentUserID()) return;
     const body = event.body.trim();
     const senderName = await getName(api, event.senderID);
+
     if(body.toLowerCase().startsWith("!tagall")){
       const admin = await isAdmin(api, event.threadID, event.senderID);
       if(!admin) return api.sendMessage("😡 Oye! Ye sirf Admin use kar sakta hai!", event.threadID, event.messageID);
@@ -129,15 +130,23 @@ login({appState}, (err, api)=>{
       });
       return;
     }
+
+    // BOT KO REPLY KARE TO FUNNY
     if(event.messageReply && event.messageReply.senderID == api.getCurrentUserID()){
       return api.sendMessage(pick(funnyReplies), event.threadID, event.messageID);
     }
+    // COMMAND LIKHE TO JAWAB
     if(body.startsWith("!")){
       const parts = body.slice(1).split(" ");
       const cmd = parts[0].toLowerCase();
       const args = parts.slice(1);
       return api.sendMessage(reply(cmd, args, senderName), event.threadID, event.messageID);
     }
-    return api.sendMessage(pick(autoReplies), event.threadID, event.messageID);
+    // BOT KO TAG KARE YA "BOT" LIKHE TABHI BOLEGA
+    if(body.toLowerCase().includes("bot") || (event.mentions && Object.keys(event.mentions).includes(String(api.getCurrentUserID())))){
+      return api.sendMessage(pick(autoReplies), event.threadID, event.messageID);
+    }
+    // MEMBERS AAPAS ME BAAT KAREIN TO BOT CHUP RAHEGA
+    return;
   });
 });
