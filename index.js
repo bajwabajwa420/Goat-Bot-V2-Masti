@@ -1,5 +1,5 @@
 // Goat-Bot V2 - Messenger Version - NEW 2026 Fix
-const login = require("ws3-fca");
+const login = require("fca-unofficial");
 const fs = require("fs");
 
 const jokes = ["Teacher: Late kyu aaye? Student: Board pe likha tha School Ahead Go Slow 😂","Lahore Lahore Ae! 😍","Goat-Bot V2 ON hai, masti rukegi nahi! 🔥"];
