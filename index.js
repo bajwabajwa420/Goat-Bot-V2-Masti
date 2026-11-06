@@ -1,6 +1,7 @@
-// BAJWA BOT - FINAL NAYI FILE - Sari purani delete, sirf 【entity-ye¦canonical_name=Ye】 rakh lo - iTunes wala
+// BAJWA BOT - FINAL FULL FILE - Full Song wali - python -m fix ke saath
 const { login } = require("ws3-fca");
 const fs = require("fs");
+const { exec } = require("child_process");
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function getName(api, id){ return new Promise((res)=>{ api.getUserInfo(id, (err, ret)=>{ if(err || !ret || !ret[id]) return res("Dost"); res(ret[id].name || "Dost"); }); }); }
 function isAdmin(api, threadID, senderID){ return new Promise((res)=>{ api.getThreadInfo(threadID, (err, info)=>{ if(err) return res(false); if(senderID == api.getCurrentUserID()) return res(true); res((info.adminIDs || []).some(a => a.id == senderID)); }); }); }
@@ -12,7 +13,7 @@ const funnyLeftMessages = ["😂 Oye {name} khud hi bhaag gaya! !roast se dar ga
 const messageCache = new Map();
 function reply(cmd, args, senderName){
   if(cmd=="hi") return "Hello Jaan! 😍 Kaisi ho?";
-  if(cmd=="help") return "🦁 BAJWA BOT 👑\nMasti: !hi !joke !shayari !song !play !masti !truth !dare !slap !lyrics !8ball !roast\nPyar: !love !hug !kiss !goodmorning !goodnight !sad !happy !birthday !crush !bff !cute\nGame: !coin !dice\nGroup: !admin !rules !intro !emoji !code !fact !info !queen !king !chappal !dost\nRonak: !couple !shadi !quiz !challenge !top !baji !bottle !ronak\nPair: !pairdp\nVIP: !del (Reply karke) | Unsend Wapis\nSong: !song [naam] = Asli Audio | !play [naam]\nAdmin: !tagall !kick";
+  if(cmd=="help") return "🦁 BAJWA BOT 👑\nMasti: !hi !joke !shayari !song !play !masti !truth !dare !slap !lyrics !8ball !roast\nPyar: !love !hug !kiss !goodmorning !goodnight !sad !happy !birthday !crush !bff !cute\nGame: !coin !dice\nGroup: !admin !rules !intro !emoji !code !fact !info !queen !king !chappal !dost\nRonak: !couple !shadi !quiz !challenge !top !baji !bottle !ronak\nPair: !pairdp\nVIP: !del (Reply karke) | Unsend Wapis\nSong: !song [naam] = FULL SONG | !play [naam]\nAdmin: !tagall !kick";
   if(cmd=="joke") return "😂 JOKE: Teacher: Late kyu aaye? Student: Status dekha tha 'School Closed' 😂";
   if(cmd=="shayari") return "❤️ SHAYARI: Teri yaad me chai pee li, ab neend nahi aati ☕😂";
   if(cmd=="masti") return "🎉 FULL MASTI: Oye chup kar ke nacho! 💃 Bajwa Bot zindabad! 🔥";
@@ -123,6 +124,7 @@ login({appState}, (err, api)=>{
       else api.sendMessage("Kisi message ko Reply karke !del likho!", event.threadID, event.messageID);
       return;
     }
+    // ===== FULL SONG - python -m wali fix =====
     if(body.toLowerCase().startsWith("!song") || body.toLowerCase().startsWith("!play") || body.toLowerCase().startsWith("!audio")){
       let songName="";
       if(body.toLowerCase().startsWith("!song audio")) songName = body.slice(11).trim();
@@ -130,21 +132,16 @@ login({appState}, (err, api)=>{
       else if(body.toLowerCase().startsWith("!play")) songName = body.slice(5).trim();
       else if(body.toLowerCase().startsWith("!audio")) songName = body.slice(6).trim();
       if(!songName) return api.sendMessage("🎵 Likho: !song rimjhim rimjhim", event.threadID, event.messageID);
-      api.sendMessage("🎵 " + songName + " dhoond rahi hun... 5 sec ruko 🎧", event.threadID, event.messageID);
-      fetch("https://itunes.apple.com/search?term=" + encodeURIComponent(songName) + "&media=music&limit=1")
-      .then(r => r.json())
-      .then(async (data)=>{
-        try{
-          const song = data.results[0];
-          if(!song) return api.sendMessage("😢 Ye song nahi mila!", event.threadID, event.messageID);
-          const audioUrl = song.previewUrl;
-          const songTitle = song.trackName + " - " + song.artistName;
-          const res = await fetch(audioUrl);
-          const buf = Buffer.from(await res.arrayBuffer());
-          fs.writeFileSync("song_audio.mp3", buf);
-          api.sendMessage({body: "🎵 AUDIO AA GAYA: " + songTitle + " 🎧\nVolume full karo! 💃", attachment: fs.createReadStream("song_audio.mp3")}, event.threadID, event.messageID);
-        }catch(e){ api.sendMessage("😢 Audio download nahi hua, dobara try karo!", event.threadID, event.messageID); }
-      }).catch(()=> api.sendMessage("😢 Net slow hai, dobara try karo!", event.threadID, event.messageID));
+      api.sendMessage("🎵 FULL SONG " + songName + " download ho raha hai... 20-30 sec ruko, full aayega! 🎧", event.threadID, event.messageID);
+      const fileName = "song_full.mp3";
+      try{ fs.unlinkSync(fileName); }catch(e){}
+      const cmd = `python -m yt_dlp -x --audio-format mp3 -o "${fileName}" "ytsearch1:${songName} song"`;
+      exec(cmd, (err)=>{
+        if(err || !fs.existsSync(fileName)){
+          return api.sendMessage("😢 Full song download nahi hua, dobara try karo!", event.threadID, event.messageID);
+        }
+        api.sendMessage({body: "🎵 FULL SONG AA GAYA: " + songName + " 🎧\nPoora song hai, maza karo! 💃🔥", attachment: fs.createReadStream(fileName)}, event.threadID, event.messageID);
+      });
       return;
     }
     if(body.toLowerCase().startsWith("!song video") || body.toLowerCase().startsWith("!video")){
