@@ -1,4 +1,4 @@
-// BAJWA BOT - FULL BARA WALA - Goat-Bot-V2 Style - 100+ Commands
+// BAJWA BOT - FULL BARA WALA - Webm Fix - ffmpeg nahi chahiye
 const { login } = require("ws3-fca");
 const fs = require("fs");
 const { exec } = require("child_process");
@@ -13,7 +13,6 @@ const funnyLeftMessages = ["😂 Oye {name} khud hi bhaag gaya! !roast se dar ga
 const messageCache = new Map();
 function reply(cmd, args, senderName){
   const argText = args.join(" ");
-  // ===== BASIC =====
   if(cmd=="hi") return "Hello Jaan! 😍 Kaisi ho? !help likh ke dekho, 100 command hain!";
   if(cmd=="hello") return "Hello Hello! 😍 Kya haal hai? ❤️";
   if(cmd=="hey") return "Hey Hey! Bolo bolo! 😎🔥";
@@ -23,7 +22,6 @@ function reply(cmd, args, senderName){
   if(cmd=="bot") return "Haan bolo! Main Bajwa Bot hun! 🦁 !help likho!";
   if(cmd=="uptime") return "🔥 Main abhi Online hun! Kab se? Jab se tumne chalaya hai! 😎";
   if(cmd=="ping") return "🏓 Pong! Main zinda hun! Speed: Full Tez! 🔥";
-  // ===== AI =====
   if(cmd=="ai"||cmd=="gpt"||cmd=="ask") {
     if(!argText) return "🤖 AI: Poochho kuch! Likho: !ai tum kon ho?";
     const q = argText.toLowerCase();
@@ -36,7 +34,6 @@ function reply(cmd, args, senderName){
     return "🤖 AI: Tumne poocha: " + argText + "\nMera jawab: Haan bilkul! Ye to bohat achi baat hai! 😍 !help likh ke aur command dekho!";
   }
   if(cmd=="imagine") { if(!argText) return "🎨 Likho: !imagine ek cute billi"; return "🎨 Imagine: " + argText + "\nWah! Kya scene hai! 😍 Agar asli photo chahiye to thora wait karo, AI bana raha hai! 🔥"; }
-  // ===== MASTI =====
   if(cmd=="joke") return pick(["😂 JOKE: Teacher: Late kyu aaye? Student: Status dekha tha 'School Closed' 😂", "😂 JOKE: Biwi: Tum mujhe kabhi bahar nahi le jate! Shohar: To chalo, kachra phenk aao! 😂", "😂 JOKE: Ladka: Tumhare papa kya karte hain? Ladki: Jo tum nahi kar sakte! 😂"]);
   if(cmd=="shayari") return pick(["❤️ SHAYARI: Teri yaad me chai pee li, ab neend nahi aati ☕😂", "❤️ SHAYARI: Tum mile to laga, zindagi me ab maza aayega! 😍", "❤️ SHAYARI: Chandni raat me, teri yaad aayi, phir chai pee li, neend ur gayi! ☕😂"]);
   if(cmd=="poetry") return pick(["💔 POETRY: Dil toot gaya, phir bhi has rahe hain, kya karein, Bajwa Bot ke fan hain! 😂", "🌙 POETRY: Raat bhar teri yaad me jaage, subah uth ke phir so gaye! 😴😂"]);
@@ -54,7 +51,6 @@ function reply(cmd, args, senderName){
   if(cmd=="lyrics") return "🎤 LYRICS: Agg lavaan majboor nu, Aan jaan di pasoori nu 🎵";
   if(cmd=="8ball") return "🎱 8BALL: " + pick(["Bilkul haan! ✅", "Nahi yaar 😂", "Pakka! 100% 🔥", "Socho mat, kar lo! 😍"]);
   if(cmd=="roast") return pick(["😈 ROAST: Tumhara face dekh ke WiFi bhi disconnect ho jata hai 😂", "😈 ROAST: Tum itni slow ho, kachua bhi tumse aage nikal jaye! 🐢😂", "😈 ROAST: Tumhari shakal dekh ke mirror bhi toot jaye! 😂"]);
-  // ===== PYAR =====
   if(cmd=="love") return "❤️ LOVE: " + Math.floor(Math.random()*100) + "% - Pakka pyaar hai! " + senderName + " ❤️";
   if(cmd=="hug") return "🤗 HUG! " + senderName + " ne sab ko hug diya! ❤️";
   if(cmd=="kiss") return "😘 KISS! Hayee! Sharm aa gayi 😘❤️";
@@ -68,7 +64,6 @@ function reply(cmd, args, senderName){
   if(cmd=="cute") return "🥰 CUTE! Tum to sab se cute ho! 😍";
   if(cmd=="ship") return "💑 SHIP: " + senderName + " ❤️ " + pick(["Ayesha","Ali","Mahnoor","Hamza","Fatima","Usman","Hira","Ahmed"]) + " = " + Math.floor(Math.random()*100) + "% Match! Shadi Mubarak! 😂❤️";
   if(cmd=="dark") return "🖤 DARK: Raat ka andhera, dil ka dard, aur Bajwa Bot ka pyaar! 🖤😂";
-  // ===== GAME / GROUP =====
   if(cmd=="coin") return "🪙 Coin: " + (Math.random()>0.5?"Head!":"Tail!");
   if(cmd=="dice") return "🎲 Dice: " + (Math.floor(Math.random()*6)+1);
   if(cmd=="admin") return "👑 Admin ke liye !tagall aur !kick use karo!";
@@ -84,7 +79,6 @@ function reply(cmd, args, senderName){
   if(cmd=="rank") return "🏆 RANK: " + senderName + " - Level: " + Math.floor(Math.random()*100) + " | Rank: Group ka Star! ⭐🔥";
   if(cmd=="dp") return "🖼️ DP: Tumhari DP to bohat cute hai! 😍 !pairdp likh ke Pair DP banao!";
   if(cmd=="pfp") return "🖼️ PFP: " + (argText || senderName) + " ki DP dekhni hai? Uski profile kholo! 😍";
-  // ===== RONAK =====
   if(cmd=="couple") return "💑 AAJ KA COUPLE: " + senderName + " ❤️ " + pick(["Ayesha","Ali","Mahnoor","Hamza","Fatima","Usman"]) + " Shadi Mubarak! 😂❤️";
   if(cmd=="shadi") return "💍 SHADI MUBARAK! Aaj " + senderName + " ki shadi hai! 🥳 Barat leke aao! 💃";
   if(cmd=="quiz") return pick(["🧠 QUIZ: Pakistan ka National Dish kya hai? A) Biryani B) Nihari C) Karahi", "🧠 QUIZ: Lahore kis darya ke kinare hai? A) Ravi B) Chenab C) Jhelum", "🧠 QUIZ: 2+2*2 kitna hota hai? A) 6 B) 8 C) 4"]);
@@ -93,7 +87,6 @@ function reply(cmd, args, senderName){
   if(cmd=="baji") return "🍵 OYE BAJI! Baji chai bana do, mehmaan aaye hain! 😂";
   if(cmd=="bottle") return "🍾 BOTTLE: Bottle ruki " + senderName + " pe! Ab !truth ya !dare 😈";
   if(cmd=="ronak") return "🔥 RONAK LAG GAYI! Sab hazir ho jao! 💃 !couple !shadi !quiz !challenge !bottle !pairdp !meme !dance likh ke dekho!";
-  // ===== TOOLS =====
   if(cmd=="weather") return "🌤️ WEATHER Lahore: Aaj mausam acha hai! 28°C, halki hawa! 😍 Chaye pee lo! ☕";
   if(cmd=="translate") { if(!argText) return "🌐 Likho: !translate hello"; return "🌐 Translate: " + argText + " = Urdu me: " + argText + " (Maza aa gaya! 😂)"; }
   if(cmd=="news") return "📰 NEWS: Aaj ki bari khabar: Bajwa Bot ne 100 command ka record tor diya! 🔥🎉";
@@ -170,18 +163,18 @@ login({appState}, (err, api)=>{
       else api.sendMessage("Kisi message ko Reply karke !del likho!", event.threadID, event.messageID);
       return;
     }
-    // ===== FULL SONG - Double System =====
+    // ===== FULL SONG - Webm - ffmpeg nahi chahiye =====
     if(body.toLowerCase().startsWith("!song") || body.toLowerCase().startsWith("!play") || body.toLowerCase().startsWith("!audio")){
       let songName="";
       if(body.toLowerCase().startsWith("!song audio")) songName = body.slice(11).trim();
       else if(body.toLowerCase().startsWith("!song")) songName = body.slice(5).trim();
       else if(body.toLowerCase().startsWith("!play")) songName = body.slice(5).trim();
       else if(body.toLowerCase().startsWith("!audio")) songName = body.slice(6).trim();
-      if(!songName) return api.sendMessage("🎵 Likho: !song rimjhim rimjhim", event.threadID, event.messageID);
+      if(!songName) return api.sendMessage("🎵 Likho: !song 12 saal", event.threadID, event.messageID);
       api.sendMessage("🎵 FULL SONG " + songName + " download ho raha hai... 30 sec ruko, poora aayega! 🎧", event.threadID, event.messageID);
-      const fileName = "song_full.mp3";
+      const fileName = "song_full.webm";
       try{ fs.unlinkSync(fileName); }catch(e){}
-      const cmd = `python -m yt_dlp -x --audio-format mp3 --audio-quality 5 -o "${fileName}" "ytsearch1:${songName} song"`;
+      const cmd = `python -m yt_dlp -f bestaudio -o "${fileName}" "ytsearch1:${songName} song"`;
       exec(cmd, async (err)=>{
         if(!err && fs.existsSync(fileName)){
           return api.sendMessage({body: "🎵 FULL SONG AA GAYA: " + songName + " 🎧\nPoora song hai, maza karo! 💃🔥", attachment: fs.createReadStream(fileName)}, event.threadID, event.messageID);
